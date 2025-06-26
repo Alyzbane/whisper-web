@@ -1,0 +1,41 @@
+services:
+  redis:
+    image: redis/redis-stack:latest
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  
+  worker:
+    build:
+      context: ./backend/celeryq
+      dockerfile: Dockerfile.dev
+    environment:
+      CELERY_BROKER_URL: redis://redis
+      CELERY_RESULT_BACKEND: redis://redis
+    depends_on:
+      - redis
+    command: celery -A tasks worker --loglevel=info
+  
+  monitor:
+    build:
+      context: ./backend/celeryq
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5555:5555"
+    volumes: ['./backend/celeryq:/queue']
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - redis
+      - worker
+    command: ['celery', 'flower', '-A', 'tasks', '--port=5555']
+
+volumes:
+  redis_data:
