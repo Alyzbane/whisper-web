@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+celery[redis]
+python-multipart
+openai-whisper
+pydantic
+python-dotenv
+loguru
+psutil
+torch
+transformers
+tqdm
