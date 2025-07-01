@@ -11,28 +11,30 @@ const nextConfig = {
   },
 
   rewrites: async () => {
+
+    const { NODE_ENV, API_VERSION, FASTAPI_INTERNAL_URL } = process.env;
+
+    const isDevelopment = NODE_ENV === "development";
+    const fastApiBaseUrl = `${FASTAPI_INTERNAL_URL}${API_VERSION}`;
+
     return [
       {
-        source: '/api/v1/:path*',
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://localhost:8000/api/v1/:path*"
-            : "/api/v1/:path",
-
+        source: `${API_VERSION}/:path*`,
+        destination: isDevelopment 
+        ? `${fastApiBaseUrl}/:path*` 
+        : `${API_VERSION}/:path*`,
       },
       {
         source: "/docs",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://localhost:8000/docs"
-            : "/docs/",
+        destination: isDevelopment
+          ? `${FASTAPI_INTERNAL_URL}/docs`
+          : `${API_VERSION}/docs`,
       },
       {
-        source: "/openai.json",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://localhost:8000/openapi.json"
-            : "/openapi.json",
+        source: "/openapi.json",
+        destination: isDevelopment 
+        ? `${fastApiBaseUrl}/openapi.json` 
+        : `${API_VERSION}/openapi.json`,
       },
     ];
   },

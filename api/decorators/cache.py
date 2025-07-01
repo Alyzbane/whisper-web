@@ -12,6 +12,7 @@ settings = get_settings()
 redis_client = Redis(host=settings.REDIS_HOST,
                      port=settings.REDIS_PORT,
                      decode_responses=True)
+
 encryption_keys = [Fernet(key) for key in settings.CACHE_ENCRYPTION_KEYS]
 cipher = MultiFernet(encryption_keys)
 

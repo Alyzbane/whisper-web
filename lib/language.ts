@@ -1,4 +1,4 @@
-export type Language = {
+type Language = {
     code: string;
     name: string;
 }
@@ -98,12 +98,3 @@ export const LANGUAGES: Language[] = [
   { code: 'tl', name: 'Tagalog' },
   { code: 'mg', name: 'Malagasy' },
 ];
-
-// Helper functions
-export function getLanguageByName(name: string): Language | undefined {
-  return LANGUAGES.find(lang => lang.name.toLowerCase() === name.toLowerCase());
-}
-
-export function getLanguageByCode(code: string): Language | undefined {
-  return LANGUAGES.find(lang => lang.code === code);
-}
