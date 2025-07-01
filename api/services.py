@@ -102,11 +102,10 @@ def transcribe_file(request: TranscriptionRequest) -> TranscriptionResponse:
     is_english_model = request.model_id.endswith(".en")
 
     language = None
+    task = request.task
+
     if request.language and request.language != "auto" and not is_english_model:
         language = request.language
-
-    if not is_english_model:
-        task = request.task
 
     # Run inference and measure time
     # start = time.time()
@@ -139,7 +138,7 @@ def get_available_models() -> List[Dict[str, str]]:
         # {"id": "base", "name": "Base"},
         # {"id": "base.en", "name": "Base (English only)"},
         {"id": "small", "name": "Small"},
-        {"id": "small.en", "name": "Small (English only)"},
+        # {"id": "small.en", "name": "Small (English only)"},
         # {"id": "distil-small.en", "name": "Distilled Small (English only)"},
         # {"id": "medium", "name": "Medium"},
         # {"id": "medium.en", "name": "Medium (English only)"},
@@ -151,7 +150,7 @@ def get_available_models() -> List[Dict[str, str]]:
         # {"id": "distil-large-v2", "name": "Distilled Large v2"},
         # {"id": "distil-large-v3", "name": "Distilled Large v3"},
         # {"id": "large-v3-turbo", "name": "Large v3 Turbo"},
-        {"id": "turbo", "name": "Turbo"},
+        # {"id": "turbo", "name":   "Turbo"},
     ]
 
 

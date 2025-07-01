@@ -11,14 +11,15 @@ class Settings(BaseSettings):
     PROJECT_NAME: str
     CORS_ORIGINS: List[str] = Field(default_factory=list)
 
-    REDIS_HOST: str = "localhost"
-    REDIS_PORT: int = 6379
+    REDIS_HOST: str
+    REDIS_PORT: int
     CACHE_ENCRYPTION_KEYS: List[str] = Field(...)
     CACHE_VERSION: str
     ADMIN_API_KEY: str
+    UPLOAD_LIMIT: int
 
     class Config:
-        env_file = ".env"
+        env_file = ".env.python"
         case_sensitive = True
 
 

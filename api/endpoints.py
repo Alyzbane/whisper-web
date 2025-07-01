@@ -1,23 +1,27 @@
-from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends
-from typing import List, Dict
+import logging
+from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends, status, Header
+from typing import List, Dict, Annotated
 import tempfile
 
-from api.models import TranscriptionRequest, TranscriptionResponse
+from api.models import TranscriptionRequest, TranscriptionResponse, HealthCheck, EndpointFilter
 from api.services import get_available_models, transcribe_file, get_api_key
 from api.decorators.cache import rotate_cached_tokens
 from api.core.logging import logger
+from api.core.config import get_settings
 
 
+settings = get_settings()
 transcription_router = APIRouter(prefix="/transcription", tags=["transcription"])
 
 @transcription_router.post("/transcribe", response_model=TranscriptionResponse)
 async def transcribe_audio(
-    file: UploadFile = File(...),
+    file: Annotated[UploadFile, File()],
     model_id: str = Form(...),
     task: str = Form(...),
-    language: str = Form("Automatic Detection"),
+    language: str = Form("auto"),
     chunk_length: int = Form(30),
-    batch_size: int = Form(24)
+    batch_size: int = Form(5),
+    content_length: Annotated[int | None, Header(lt=settings.UPLOAD_LIMIT)] = None,
 ):
     """
     Transcribe an audio file synchronously with Redis caching.
@@ -91,3 +95,22 @@ async def rotate_tokens():
         "deleted_count": result["deleted"],
         "total": result["total"]
     }
+
+
+health_router = APIRouter(prefix="/health", tags=["health"])
+
+@health_router.get(
+        "/",
+        tags=["health"],
+        response_description="Return HTTP Status Code 200 OK",
+        status_code=status.HTTP_200_OK,
+        response_model=HealthCheck
+        )
+async def health_check() -> HealthCheck:
+    """
+    Health check endpoint to verify the API is running. 
+    """
+    return HealthCheck(status="OK")
+
+
+logging.getLogger("uvicorn.access").addFilter(EndpointFilter([f"{settings.API_VERSION}/health"]))
