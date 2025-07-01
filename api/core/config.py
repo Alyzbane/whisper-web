@@ -11,8 +11,12 @@ class Settings(BaseSettings):
     PROJECT_NAME: str
     CORS_ORIGINS: List[str] = Field(default_factory=list)
 
+    REDIS_SCHEME: str
+    REDIS_USERNAME: str
+    REDIS_PASSWORD: str
     REDIS_HOST: str
     REDIS_PORT: int
+
     CACHE_ENCRYPTION_KEYS: List[str] = Field(...)
     CACHE_VERSION: str
     ADMIN_API_KEY: str

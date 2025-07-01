@@ -9,9 +9,12 @@ from api.models import TranscriptionRequest, TranscriptionResponse
 
 settings = get_settings()
 
-redis_client = Redis(host=settings.REDIS_HOST,
-                     port=settings.REDIS_PORT,
-                     decode_responses=True)
+redis_client = Redis.from_url(url=
+                              f"{settings.REDIS_SCHEME}" +
+                              f"{settings.REDIS_USERNAME}:" +
+                              f"{settings.REDIS_PASSWORD}@" +
+                              f"{settings.REDIS_HOST}:" +
+                              f"{settings.REDIS_PORT}", decode_responses=True)
 
 encryption_keys = [Fernet(key) for key in settings.CACHE_ENCRYPTION_KEYS]
 cipher = MultiFernet(encryption_keys)
