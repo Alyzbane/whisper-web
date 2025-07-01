@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useState, useEffect } from "react";
-import { transcribeAudio, getAvailableModels, ensureApiHealthy } from "@/lib/api";
+import { transcribeAudio, getAvailableModels } from "@/lib/api";
 import { DEFAULT_CONFIG } from "@/lib/constants";
 import { useTranscriptionHistory } from "@/lib/hooks/use-transcription-history";
 import type {
@@ -110,8 +110,6 @@ export default function MediaTranscriptionApp() {
     setText("");
 
     try {
-      await ensureApiHealthy();
-
       const formData = new FormData();
       formData.append("file", file);
       formData.append("model_id", config.model);
