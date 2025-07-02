@@ -29,7 +29,7 @@ def create_pipe(model_id: str) -> BatchedInferencePipeline:
     Returns:
         BatchedInferencePipeline: The pipeline for the specified model. 
     """
-
+    global pipe_cache
     if model_id in pipe_cache:
         logging.info(f"Using cached pipeline for model {model_id}")
         return pipe_cache[model_id]
@@ -51,7 +51,7 @@ def create_pipe(model_id: str) -> BatchedInferencePipeline:
     # Cache the pipeline for future use
     pipe_cache[model_id] = pipe
     
-    return pipe
+    return pipe_cache[model_id]
 
 
 @log_error
@@ -134,7 +134,7 @@ def get_available_models() -> List[Dict[str, str]]:
     """
     return [
         {"id": "tiny", "name": "Tiny"},
-        {"id": "tiny.en", "name": "Tiny (English only)"},
+        # {"id": "tiny.en", "name": "Tiny (English only)"},
         # {"id": "base", "name": "Base"},
         # {"id": "base.en", "name": "Base (English only)"},
         {"id": "small", "name": "Small"},

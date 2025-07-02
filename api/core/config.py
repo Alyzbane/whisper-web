@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     UPLOAD_LIMIT: int
 
     class Config:
-        env_file = ".env.python"
+        env_file = ".env.fastapi"
         case_sensitive = True
 
 

@@ -11,6 +11,53 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-  
+  fastapi:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.fastapi.dev
+    volumes:
+      - ./api:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    env_file: .env.fastapi
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+
+  nextjs-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev.nextjs
+    env_file: .env.local
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - fastapi
+      - redis
+    stdin_open: true
+    tty: true
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod.nextjs
+    env_file: .env.production
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - fastapi
+    profiles:
+      - production
+
 volumes:
   redis_data:

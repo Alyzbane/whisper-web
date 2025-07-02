@@ -97,11 +97,10 @@ async def rotate_tokens():
     }
 
 
-health_router = APIRouter(prefix="/health", tags=["health"])
+general_router = APIRouter(tags=["general"])
 
-@health_router.get(
-        "/",
-        tags=["health"],
+@general_router.get(
+        "/health",
         response_description="Return HTTP Status Code 200 OK",
         status_code=status.HTTP_200_OK,
         response_model=HealthCheck

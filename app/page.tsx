@@ -18,6 +18,7 @@ import { FileUploadSection } from "@/components/transcription/file-upload-sectio
 import { TranscriptionControls } from "@/components/transcription/transcription-controls";
 import { AdvancedSettings } from "@/components/transcription/advanced-settings";
 import { HistorySidebar } from "@/components/transcription/history-sidebar";
+import { WelcomeDialog } from "@/components/transcription/welcome-dialog";
 
 export default function MediaTranscriptionApp() {
   // File and models state
@@ -38,6 +39,7 @@ export default function MediaTranscriptionApp() {
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [transcriptionStatus, setTranscriptionStatus] = useState("");
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
 
   // Custom hooks
   const { history, addToHistory, deleteFromHistory } =
@@ -148,10 +150,22 @@ export default function MediaTranscriptionApp() {
     setConfig((prev) => ({ ...prev, ...updates }));
   };
 
+  // Show welcome dialog on page load
+  useEffect(() => {
+    setShowDialog(true);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
       <div className="max-w-4xl mx-auto space-y-6">
         <PageHeader />
+
+        {showDialog && (
+          <WelcomeDialog
+            isOpen={showDialog}
+            onClose={() => setShowDialog(false)}
+          />
+        )}
 
         <TranscriptionResult text={text} onCopy={copyToClipboard} />
 
