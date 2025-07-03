@@ -7,7 +7,7 @@ export async function transcribeAudio(formData: FormData) {
   })
 
   if (!res.ok) {
-    throw new Error(`Unknown eror: ${res.status} ${res.statusText}`);
+    throw new Error(`Unknown eror: ${res.status}}`);
   }
 
   return await res.json()

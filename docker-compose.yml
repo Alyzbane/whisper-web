@@ -28,13 +28,13 @@ services:
 
   nextjs-app:
     build:
-      context: .
+      context: ./frontend
       dockerfile: Dockerfile.dev.nextjs
-    env_file: .env.local
+    env_file: ./frontend/.env.local
     ports:
       - "3000:3000"
     volumes:
-      - .:/app
+      - ./frontend/:/app
       - /app/node_modules
       - /app/.next
     environment:
@@ -47,9 +47,9 @@ services:
 
   frontend:
     build:
-      context: .
+      context: ./frontend
       dockerfile: Dockerfile.prod.nextjs
-    env_file: .env.production
+    env_file: ./frontend/.env.production
     ports:
       - "3001:3000"
     environment:
