@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from typing import Optional, Tuple, Literal, List
 import logging
 
-
 class TranscriptionSegment(BaseModel):
     """Model for a single segment of transcription."""
     id: Optional[int] = None

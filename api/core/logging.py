@@ -1,5 +1,6 @@
 from typing import Any, Callable
 from loguru import logger
+
 # Configure logging
 logger.add("logs/app.log", rotation="10 MB", level="INFO", backtrace=True, diagnose=True)
 

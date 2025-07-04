@@ -3,9 +3,11 @@ from functools import wraps
 
 from cryptography.fernet import Fernet, MultiFernet, InvalidToken
 from redis import Redis
+
 from api.core.logging import log_error
 from api.core.config import get_settings
-from api.models import TranscriptionRequest, TranscriptionResponse
+
+from ..models import TranscriptionRequest, TranscriptionResponse
 
 settings = get_settings()
 

@@ -3,11 +3,12 @@ from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends, s
 from typing import List, Dict, Annotated
 import tempfile
 
-from api.models import TranscriptionRequest, TranscriptionResponse, HealthCheck, EndpointFilter
-from api.services import get_available_models, transcribe_file, get_api_key
-from api.decorators.cache import rotate_cached_tokens
-from api.core.logging import logger
-from api.core.config import get_settings
+from .models import TranscriptionRequest, TranscriptionResponse, HealthCheck, EndpointFilter
+from .services import get_available_models, transcribe_file, get_api_key
+
+from .decorators.cache import rotate_cached_tokens
+from ..core.logging import logger
+from ..core.config import get_settings
 
 
 settings = get_settings()

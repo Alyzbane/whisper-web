@@ -16,7 +16,7 @@ services:
       context: ./api
       dockerfile: Dockerfile.fastapi.dev
     volumes:
-      - ./api:/app
+      - ./api:/api
     ports:
       - "8000:8000"
     depends_on:

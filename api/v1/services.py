@@ -3,10 +3,12 @@ from functools import lru_cache
 import torch
 import logging
 
-from api.core.config import get_settings
-from api.core.logging import log_error
-from api.decorators.cache import cache_transcription
-from api.models import TranscriptionRequest, TranscriptionResponse, TranscriptionSegment
+from .models import TranscriptionRequest, TranscriptionResponse, TranscriptionSegment
+
+from ..core.config import get_settings
+from ..core.logging import log_error
+from .decorators.cache import cache_transcription
+
 from faster_whisper import WhisperModel, BatchedInferencePipeline
 from fastapi import Depends, HTTPException, status
 from fastapi.security import APIKeyHeader

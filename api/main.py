@@ -2,9 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from api.core.config import get_settings
-from .services import create_pipe, pipe_cache
-from .endpoints import transcription_router, admin_router, general_router
+from .core.config import get_settings
+
+from .v1.services import create_pipe, pipe_cache
+from .v1.endpoints import transcription_router, admin_router, general_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

@@ -1,7 +1,7 @@
 # api/Dockerfile.fastapi
 FROM python:3.10-slim
 
-WORKDIR /app
+WORKDIR /api
 
 # Install dependencies
 RUN apt-get update && apt-get install -y curl \
@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Set the environment variable for FastAPI
-ENV PYTHONPATH=/app
+ENV PYTHONPATH=/api
 
 # Run the FastAPI application
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
