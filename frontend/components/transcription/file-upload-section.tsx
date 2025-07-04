@@ -7,8 +7,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Upload, Loader2, Play } from "lucide-react"
+import { useEffect, useState } from "react"
 
 import { MAX_UPLOAD_SIZE } from "@/lib/constants"
+import { checkApiHealth } from "@/lib/api"
 
 interface FileUploadSectionProps {
   file: File | null
@@ -27,6 +29,17 @@ export function FileUploadSection({
   transcriptionStatus,
   disabled = false,
 }: FileUploadSectionProps) {
+  const [isApiHealthy, setIsApiHealthy] = useState(false)
+
+  useEffect(() => {
+    async function fetchApiHealth() {
+      const healthStatus = await checkApiHealth()
+      setIsApiHealthy(healthStatus)
+    }
+
+    fetchApiHealth()
+  }, [])
+
   const transcriptStatus = transcriptionStatus.includes("exceeds")
 
   return (
@@ -62,7 +75,12 @@ export function FileUploadSection({
           </div>
         </div>
 
-        <Button onClick={onSubmit} disabled={!file || isTranscribing || disabled || transcriptStatus} className="w-full" size="lg">
+        <Button
+          onClick={onSubmit}
+          disabled={!file || isTranscribing || disabled || transcriptStatus || !isApiHealthy}
+          className="w-full"
+          size="lg"
+        >
           {isTranscribing ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

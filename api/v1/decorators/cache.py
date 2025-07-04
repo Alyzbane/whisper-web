@@ -1,13 +1,14 @@
 import hashlib
 from functools import wraps
+from cryptography.fernet import InvalidToken
 
-from cryptography.fernet import Fernet, MultiFernet, InvalidToken
 from redis import Redis
 
-from api.core.logging import log_error
-from api.core.config import get_settings
+from ...core.logging import log_error
+from ...core.config import get_settings
 
 from ..models import TranscriptionRequest, TranscriptionResponse
+from ..utils import create_multi_fernet
 
 settings = get_settings()
 
@@ -18,11 +19,11 @@ redis_client = Redis.from_url(url=
                               f"{settings.REDIS_HOST}:" +
                               f"{settings.REDIS_PORT}", decode_responses=True)
 
-encryption_keys = [Fernet(key) for key in settings.CACHE_ENCRYPTION_KEYS]
-cipher = MultiFernet(encryption_keys)
+cipher = create_multi_fernet(settings)
 
+CACHE_KEY_PREFIX = settings.CACHE_KEY_PREFIX
 CACHE_VERSION = settings.CACHE_VERSION
-
+CACHE_TTL = settings.CACHE_TTL
 
 @log_error
 def make_cache_key(request: TranscriptionRequest) -> str:
@@ -33,11 +34,13 @@ def make_cache_key(request: TranscriptionRequest) -> str:
     Returns:
         str: A unique cache key for the transcription request.
     """
+    # Calculate the SHA-256 hash of the file content
     with open(request.filepath, 'rb') as f:
         file_hash = hashlib.sha256(f.read()).hexdigest()
 
+    # Create a unique cache key using the file hash and request parameters
     key = (
-        f"transcription:{CACHE_VERSION}:"
+        f"{CACHE_KEY_PREFIX}:{CACHE_VERSION}:"
         f"{file_hash}"
         f"{request.model_id}:"
         f"{request.task}:"
@@ -83,7 +86,7 @@ def rotate_cached_tokens():
 
 
 @log_error
-def cache_transcription(ttl=3600):
+def cache_transcription(ttl=CACHE_TTL):
     """
     Decorator to cache transcription responses in Redis.
     Args:

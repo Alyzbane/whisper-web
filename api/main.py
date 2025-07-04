@@ -4,8 +4,12 @@ from contextlib import asynccontextmanager
 
 from .core.config import get_settings
 
-from .v1.services import create_pipe, pipe_cache
+from .v1.utils import create_pipe, pipe_cache
 from .v1.endpoints import transcription_router, admin_router, general_router
+
+# Create settings and app instance
+settings = get_settings()
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -23,8 +27,7 @@ async def lifespan(app: FastAPI):
     """
     pipe_cache.clear()  # Clear the cache on shutdown
 
-# Create settings and app instance
-settings = get_settings()
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_VERSION}/openapi.json",

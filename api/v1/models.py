@@ -18,7 +18,6 @@ class TranscriptionRequest(BaseModel):
     batch_size: int = 24
     filepath: str
 
-
 class TranscriptionResponse(BaseModel):
     """Model for transcription API response."""
     text: str

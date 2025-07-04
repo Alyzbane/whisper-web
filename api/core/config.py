@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     REDIS_PORT: int
 
     CACHE_ENCRYPTION_KEYS: List[str] = Field(...)
+    CACHE_TTL: int = Field(default=3600, description="Cache time-to-live in seconds")
+    CACHE_KEY_PREFIX: str
     CACHE_VERSION: str
     ADMIN_API_KEY: str
     UPLOAD_LIMIT: int

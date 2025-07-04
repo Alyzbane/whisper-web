@@ -1,5 +1,4 @@
 import { clsx, type ClassValue } from "clsx"
-import { trackFallbackParamAccessed } from "next/dist/server/app-render/dynamic-rendering"
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {

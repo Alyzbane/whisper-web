@@ -74,7 +74,7 @@ A modern web application for audio transcription and translation using [faster-w
 
 4. **Configure Frontend environment** (`frontend/.env.local`)
    ```bash
-   NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api/v1
+   NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
    NEXT_PUBLIC_UPLOAD_MAX_SIZE=100
    API_VERSION=/api/v1
    ```
@@ -143,8 +143,9 @@ pnpm dev
 #### Frontend Configuration
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `NEXT_PUBLIC_API_BASE_URL` | Backend API URL | `http://localhost:8000/api/v1` |
+| `NEXT_PUBLIC_API_BASE_URL` | Backend BASE API URL | `http://localhost:8000` |
 | `NEXT_PUBLIC_UPLOAD_MAX_SIZE` | Max upload size (MB) | `100` |
+| `API_ROOT_ENDPOINT` | Backend API ROOT  | `/api/v1` |
 
 ## API Endpoints
 

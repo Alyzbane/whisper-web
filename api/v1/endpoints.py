@@ -1,13 +1,13 @@
 import logging
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends, status, Header
 from typing import List, Dict, Annotated
+from loguru import logger
 import tempfile
 
 from .models import TranscriptionRequest, TranscriptionResponse, HealthCheck, EndpointFilter
-from .services import get_available_models, transcribe_file, get_api_key
-
+from .services import transcribe_file, get_api_key
+from .utils import get_available_models
 from .decorators.cache import rotate_cached_tokens
-from ..core.logging import logger
 from ..core.config import get_settings
 
 
@@ -24,8 +24,7 @@ async def transcribe_audio(
     batch_size: int = Form(5),
     content_length: Annotated[int | None, Header(lt=settings.UPLOAD_LIMIT)] = None,
 ):
-    """
-    Transcribe an audio file synchronously with Redis caching.
+    """Transcribe an audio file synchronously with Redis caching.
     
     Args:
         file: The audio file to transcribe
@@ -86,8 +85,7 @@ admin_router = APIRouter(prefix="/admin", tags=["admin"])
 
 @admin_router.get("/rotate-tokens", dependencies=[Depends(get_api_key)])
 async def rotate_tokens():
-    """
-    Rotate the encryption keys used for caching in Redis.
+    """Rotate the encryption keys used for caching in Redis.
     """
     result = rotate_cached_tokens()
     return {
