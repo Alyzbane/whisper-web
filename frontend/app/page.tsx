@@ -3,7 +3,7 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import { transcribeAudio, getAvailableModels } from "@/lib/api";
-import { DEFAULT_CONFIG } from "@/lib/constants";
+import { DEFAULT_CONFIG, MAX_UPLOAD_SIZE } from "@/lib/constants";
 import { useTranscriptionHistory } from "@/lib/hooks/use-transcription-history";
 import type {
   TranscriptionModel,
@@ -19,6 +19,7 @@ import { TranscriptionControls } from "@/components/transcription/transcription-
 import { AdvancedSettings } from "@/components/transcription/advanced-settings";
 import { HistorySidebar } from "@/components/transcription/history-sidebar";
 import { WelcomeDialog } from "@/components/transcription/welcome-dialog";
+import { formatFileSize } from "@/lib/utils";
 
 export default function MediaTranscriptionApp() {
   // File and models state
@@ -73,20 +74,17 @@ export default function MediaTranscriptionApp() {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
 
-    const maxUploadSizeMb = Math.round(
-      parseInt(process.env.NEXT_PUBLIC_UPLOAD_MAX_SIZE || "72351744", 10) /
-        (1024 * 1024)
-    ); // Default to ~69 MB
+    const verifyFs = selectedFile.size > MAX_UPLOAD_SIZE.bytes;
+    const formattedFs = formatFileSize(selectedFile.size);
 
-    const selectedFileSizeMb = Math.round(selectedFile.size / (1024 * 1024));
-
-    if (selectedFileSizeMb > maxUploadSizeMb) {
+    if (verifyFs) {
       setTranscriptionStatus(
-        `File size exceeds the maximum limit of ${maxUploadSizeMb} MB.`
+        `File size ${formattedFs} exceeds the maximum limit`
       );
       return;
     }
 
+    setTranscriptionStatus("");
     setFile(selectedFile);
 
     if (audio) {
@@ -126,13 +124,16 @@ export default function MediaTranscriptionApp() {
       setTranscriptionStatus("Transcription completed!");
 
       // Add to history with file for deduplication
-      await addToHistory({
-        text: result.text,
-        model: config.model,
-        language: config.language,
-        task: config.task,
-        fileName: file.name,
-      }, file);
+      await addToHistory(
+        {
+          text: result.text,
+          model: config.model,
+          language: config.language,
+          task: config.task,
+          fileName: file.name,
+        },
+        file
+      );
     } catch (error: any) {
       console.error("Transcription error:", error);
       setTranscriptionStatus(`Error: ${error.message}`);

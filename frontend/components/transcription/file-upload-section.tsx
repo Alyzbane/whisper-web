@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Upload, Loader2, Play } from "lucide-react"
 
+import { MAX_UPLOAD_SIZE } from "@/lib/constants"
+
 interface FileUploadSectionProps {
   file: File | null
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -25,6 +27,8 @@ export function FileUploadSection({
   transcriptionStatus,
   disabled = false,
 }: FileUploadSectionProps) {
+  const transcriptStatus = transcriptionStatus.includes("exceeds")
+
   return (
     <Card>
       <CardHeader>
@@ -49,16 +53,16 @@ export function FileUploadSection({
               Supported: MP3, WAV, M4A, etc.
             </span>
             <span className={`${
-              transcriptionStatus.includes("exceeds") 
+              transcriptStatus
                 ? "text-red-600 font-medium" 
                 : "text-slate-500"
             }`}>
-              Max: 69 MB
+              Max: {MAX_UPLOAD_SIZE.formatted}
             </span>
           </div>
         </div>
 
-        <Button onClick={onSubmit} disabled={!file || isTranscribing || disabled} className="w-full" size="lg">
+        <Button onClick={onSubmit} disabled={!file || isTranscribing || disabled || transcriptStatus} className="w-full" size="lg">
           {isTranscribing ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
